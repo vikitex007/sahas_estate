@@ -1,0 +1,24 @@
+{
+  "name": "premier-real-estate",
+  "version": "1.0.0",
+  "description": "Modern real estate website with Netlify CMS",
+  "main": "index.html",
+  "scripts": {
+    "dev": "npx netlify-cms-proxy-server",
+    "build": "echo 'Static site - no build required'",
+    "start": "python -m http.server 8000"
+  },
+  "keywords": [
+    "real-estate",
+    "static-site",
+    "netlify-cms",
+    "html",
+    "css",
+    "javascript"
+  ],
+  "author": "Premier Real Estate",
+  "license": "MIT",
+  "devDependencies": {
+    "netlify-cms-proxy-server": "^1.3.0"
+  }
+} 

@@ -1,0 +1,24 @@
+backend:
+  name: git-gateway
+  branch: main
+
+local_backend: true
+
+media_folder: "images/uploads"
+public_folder: "/images/uploads"
+
+collections:
+  - name: "media-posts"
+    label: "Media Posts"
+    folder: "_posts"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    fields:
+      - {label: "Layout", name: "layout", widget: "hidden", default: "post"}
+      - {label: "Title", name: "title", widget: "string"}
+      - {label: "Description", name: "description", widget: "text"}
+      - {label: "Type", name: "type", widget: "select", options: ["photo", "video"]}
+      - {label: "Image", name: "image", widget: "image", required: false}
+      - {label: "Video URL", name: "video", widget: "string", required: false, hint: "YouTube embed URL (e.g., https://www.youtube.com/embed/VIDEO_ID)"}
+      - {label: "Date", name: "date", widget: "datetime"}
+      - {label: "Draft", name: "draft", widget: "boolean", default: false} 
