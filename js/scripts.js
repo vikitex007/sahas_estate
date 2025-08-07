@@ -17,12 +17,14 @@ let mediaPosts = [];
 
 // Loading Animation
 window.addEventListener("load", () => {
-  setTimeout(() => {
-    loadingAnimation.classList.add("hidden");
+  if (loadingAnimation) {
     setTimeout(() => {
-      loadingAnimation.style.display = "none";
-    }, 500);
-  }, 1000);
+      loadingAnimation.classList.add("hidden");
+      setTimeout(() => {
+        loadingAnimation.style.display = "none";
+      }, 500);
+    }, 1000);
+  }
 });
 
 // Smooth Scrolling for Navigation Links
@@ -30,9 +32,16 @@ navLinks.forEach((link) => {
   link.addEventListener("click", (e) => {
     e.preventDefault();
     const targetId = link.getAttribute("href");
+
+    // Handle external links (like projects.html)
+    if (targetId && !targetId.startsWith("#")) {
+      window.location.href = targetId;
+      return;
+    }
+
     const targetSection = document.querySelector(targetId);
 
-    if (targetSection) {
+    if (targetSection && header) {
       const headerHeight = header.offsetHeight;
       const targetPosition = targetSection.offsetTop - headerHeight;
 
@@ -46,6 +55,8 @@ navLinks.forEach((link) => {
 
 // Active Navigation Link on Scroll
 function updateActiveNavLink() {
+  if (!header) return;
+
   const sections = document.querySelectorAll(".section");
   const scrollPos = window.scrollY + header.offsetHeight + 100;
 
@@ -66,6 +77,8 @@ function updateActiveNavLink() {
 
 // Header Background on Scroll
 function updateHeaderBackground() {
+  if (!header) return;
+
   if (window.scrollY > 100) {
     header.style.background = "rgba(255, 255, 255, 0.98)";
     header.style.boxShadow = "0 4px 30px rgba(0, 0, 0, 0.15)";
@@ -145,6 +158,9 @@ document.addEventListener("DOMContentLoaded", () => {
   // Initialize lightbox
   setupLightbox();
 
+  // Initialize project card clicks
+  setupProjectCards();
+
   // Initialize form validation
   if (contactForm) {
     contactForm.addEventListener("submit", handleFormSubmit);
@@ -155,8 +171,8 @@ document.addEventListener("DOMContentLoaded", () => {
 // Close mobile menu when clicking on a link
 navLinks.forEach((link) => {
   link.addEventListener("click", () => {
-    navMenu.classList.remove("active");
-    mobileMenuToggle.classList.remove("active");
+    if (navMenu) navMenu.classList.remove("active");
+    if (mobileMenuToggle) mobileMenuToggle.classList.remove("active");
   });
 });
 
@@ -172,7 +188,7 @@ function setupLightbox() {
       const description =
         item.querySelector("p, .media-post-description")?.textContent || "";
 
-      if (img && lightboxContent) {
+      if (img && lightboxContent && lightbox) {
         lightboxContent.innerHTML = `
           <img src="${img.src}" alt="${img.alt}" class="lightbox-image">
           <div class="lightbox-info">
@@ -189,39 +205,50 @@ function setupLightbox() {
 }
 
 // Close lightbox
-lightboxClose.addEventListener("click", closeLightbox);
-lightbox.addEventListener("click", (e) => {
-  if (e.target === lightbox) {
-    closeLightbox();
-  }
-});
+if (lightboxClose) {
+  lightboxClose.addEventListener("click", closeLightbox);
+}
+if (lightbox) {
+  lightbox.addEventListener("click", (e) => {
+    if (e.target === lightbox) {
+      closeLightbox();
+    }
+  });
+}
 
 function closeLightbox() {
-  lightbox.classList.remove("active");
-  document.body.style.overflow = "";
+  if (lightbox) {
+    lightbox.classList.remove("active");
+    document.body.style.overflow = "";
+  }
 }
 
 // Tab Functionality
-tabBtns.forEach((btn) => {
-  btn.addEventListener("click", () => {
-    const targetTab = btn.getAttribute("data-tab");
+if (tabBtns.length > 0) {
+  tabBtns.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const targetTab = btn.getAttribute("data-tab");
 
-    // Remove active class from all buttons and contents
-    tabBtns.forEach((b) => b.classList.remove("active"));
-    tabContents.forEach((content) => content.classList.remove("active"));
+      // Remove active class from all buttons and contents
+      tabBtns.forEach((b) => b.classList.remove("active"));
+      tabContents.forEach((content) => content.classList.remove("active"));
 
-    // Add active class to clicked button and corresponding content
-    btn.classList.add("active");
-    document.getElementById(targetTab).classList.add("active");
+      // Add active class to clicked button and corresponding content
+      btn.classList.add("active");
+      const targetElement = document.getElementById(targetTab);
+      if (targetElement) {
+        targetElement.classList.add("active");
+      }
 
-    // Load content based on tab
-    if (targetTab === "photos") {
-      loadPhotoPosts();
-    } else if (targetTab === "videos") {
-      loadVideoPosts();
-    }
+      // Load content based on tab
+      if (targetTab === "photos") {
+        loadPhotoPosts();
+      } else if (targetTab === "videos") {
+        loadVideoPosts();
+      }
+    });
   });
-});
+}
 
 // Media Gallery Functionality
 function setupMediaGallery() {
@@ -831,7 +858,10 @@ function updateLanguage() {
 
 function updateLanguageToggle() {
   const toggle = document.getElementById("languageToggle");
+  if (!toggle) return;
+
   const langText = toggle.querySelector(".lang-text");
+  if (!langText) return;
 
   if (currentLanguage === "ne") {
     langText.textContent = "English";
@@ -844,9 +874,106 @@ function updateLanguageToggle() {
 
 // Language toggle is already initialized in the main DOMContentLoaded event listener
 
+// Project Card Functionality
+function setupProjectCards() {
+  const projectCards = document.querySelectorAll(".project-card");
+
+  projectCards.forEach((card) => {
+    card.addEventListener("click", () => {
+      const projectData = {
+        title: card.querySelector("h3")?.textContent || "",
+        description: card.querySelector("p")?.textContent || "",
+        image: card.querySelector("img")?.src || "",
+        type: card.querySelector(".project-type")?.textContent || "",
+        location: card.querySelector(".project-location")?.textContent || "",
+        status: card.querySelector(".project-status")?.textContent || "",
+      };
+
+      showProjectModal(projectData);
+    });
+
+    // Add cursor pointer to indicate clickable
+    card.style.cursor = "pointer";
+  });
+}
+
+function showProjectModal(projectData) {
+  // Create modal HTML
+  const modalHTML = `
+    <div class="project-modal" id="projectModal">
+      <div class="project-modal-content">
+        <button class="project-modal-close" id="projectModalClose">&times;</button>
+        <div class="project-modal-image">
+          <img src="${projectData.image}" alt="${projectData.title}">
+        </div>
+        <div class="project-modal-info">
+          <h2>${projectData.title}</h2>
+          <p class="project-modal-description">${projectData.description}</p>
+          <div class="project-modal-details">
+            <div class="project-modal-detail">
+              <strong>Type:</strong> ${projectData.type}
+            </div>
+            <div class="project-modal-detail">
+              <strong>Location:</strong> ${projectData.location}
+            </div>
+            <div class="project-modal-detail">
+              <strong>Status:</strong> ${projectData.status}
+            </div>
+          </div>
+          <div class="project-modal-actions">
+            <button class="btn btn-primary" onclick="contactUs()">Contact Us</button>
+            <button class="btn btn-secondary" onclick="closeProjectModal()">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  // Add modal to page
+  document.body.insertAdjacentHTML("beforeend", modalHTML);
+
+  // Add event listeners
+  const modal = document.getElementById("projectModal");
+  const closeBtn = document.getElementById("projectModalClose");
+
+  if (closeBtn) {
+    closeBtn.addEventListener("click", closeProjectModal);
+  }
+
+  if (modal) {
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) {
+        closeProjectModal();
+      }
+    });
+  }
+
+  // Prevent body scroll
+  document.body.style.overflow = "hidden";
+}
+
+function closeProjectModal() {
+  const modal = document.getElementById("projectModal");
+  if (modal) {
+    modal.remove();
+    document.body.style.overflow = "";
+  }
+}
+
+function contactUs() {
+  closeProjectModal();
+  // Scroll to contact section or show contact form
+  const contactSection = document.querySelector("#contact");
+  if (contactSection) {
+    contactSection.scrollIntoView({ behavior: "smooth" });
+  }
+}
+
 // Form submission handler
 function handleFormSubmit(e) {
   e.preventDefault();
+
+  if (!contactForm) return;
 
   const formData = new FormData(contactForm);
   const name = formData.get("name");
