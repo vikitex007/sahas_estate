@@ -119,25 +119,26 @@
                                 <div class="member-photo">
                                     <img src="_posts/Engineer.jpg" alt="Accountant" class="member-img">
                                 </div>
-                                <h4 data-en="Accountant" data-ne="लेखापाल">Engineer</h4>
+                                <h4 data-en="Accountant" data-ne="इन्जिनियर">Engineer</h4>
                                 <h5 class="text-gray-900 text-sm">Mr.Gopal Shrestha</h5>
                                 <p data-en="Financial management and compliance" data-ne="वित्तीय व्यवस्थापन र अनुपालन">Our Head Engineer and Architect</p>
                             </div>
                         </div>
                     </div>
                     <div class="about-stats">
-                        <div class="stat-item">
-                            <h4 data-en="2+" data-ne="१५+">2+</h4>
-                            <p data-en="Years Experience" data-ne="वर्ष अनुभव">Years Experience</p>
-                        </div>
-                        <div class="stat-item">
-                            <h4 data-en="100+" data-ne="५००+">100+</h4>
-                            <p data-en="Properties Sold" data-ne="बेचिएका सम्पत्तिहरू">Properties Sold</p>
-                        </div>
-                        <div class="stat-item">
-                            <h4 data-en="100+" data-ne="१०००+">100+</h4>
-                            <p data-en="Happy Clients" data-ne="सन्तुष्ट ग्राहकहरू">Happy Clients</p>
-                        </div>
+                    <div class="stat-item">
+                        <h4 data-en="2+" data-ne="२+">2+</h4>
+                        <p data-en="Years Experience" data-ne="वर्ष अनुभव">Years Experience</p>
+                    </div>
+                    <div class="stat-item">
+                        <h4 data-en="100+" data-ne="१००+">100+</h4>
+                        <p data-en="Properties Sold" data-ne="बेचिएका सम्पत्तिहरू">Properties Sold</p>
+                    </div>
+                    <div class="stat-item">
+                        <h4 data-en="100+" data-ne="१००+">100+</h4>
+                        <p data-en="Happy Clients" data-ne="सन्तुष्ट ग्राहकहरू">Happy Clients</p>
+                    </div>
+                    </div>
                     </div>
                 </div>
             </div>
@@ -265,7 +266,7 @@
                     <div class="contact-info">
                         <div class="contact-item">
                             <h3 data-en="Address" data-ne="ठेगाना">Address</h3>
-                            <p data-en="Sabhapati chowk woda no.8, Kawasuti, Nepal" data-ne="१२३ रियल इस्टेट स्ट्रिट, काठमाडौं, नेपाल">Sabhapati Chowk, kawasuti, Chitwan, Nepal</p>
+                            <p data-en="Sabhapati chowk woda no.8, Kawasuti, Nepal" data-ne="सवापति चौक वडा नं. ८, कावासुती, नेपाल">Sabhapati Chowk, kawasuti, Chitwan, Nepal</p>
                         </div>
                         <div class="contact-item">
                             <h3 data-en="Phone Numbers" data-ne="फोन नम्बरहरू">Phone Numbers</h3>
@@ -336,5 +337,37 @@
     </div>
 
     <script src="js/scripts.js"></script>
+    <script>
+document.addEventListener("DOMContentLoaded", function() {
+    const navMenu = document.getElementById('navMenu');
+    const toggleBtn = document.getElementById('mobileMenuToggle');
+
+    // Fully reset menu state on load
+    if (navMenu) {
+        navMenu.classList.remove('active');
+        navMenu.style.display = ''; // remove any inline open state
+    }
+    if (toggleBtn) {
+        toggleBtn.classList.remove('active');
+        toggleBtn.setAttribute('aria-expanded', 'false');
+    }
+
+    // Close on any nav link click
+    document.querySelectorAll('#navMenu a').forEach(link => {
+        link.addEventListener('click', () => {
+            if (navMenu) {
+                navMenu.classList.remove('active');
+                navMenu.style.display = '';
+            }
+            if (toggleBtn) {
+                toggleBtn.classList.remove('active');
+                toggleBtn.setAttribute('aria-expanded', 'false');
+            }
+        });
+    });
+});
+</script>
+
+
 </body>
 </html> 
